@@ -37,6 +37,7 @@ services:
         bench set-config -g redis_queue "redis://$$REDIS_QUEUE";
         bench set-config -g redis_socketio "redis://$$REDIS_QUEUE";
         bench set-config -gp socketio_port $$SOCKETIO_PORT;
+        bench set-config -g chromium_path /usr/lib/chromium/chromium-headless-shell;
     environment:
       DB_HOST: db
       DB_PORT: "3306"
@@ -180,7 +181,7 @@ services:
         condition: service_completed_successfully
 
   redis-queue:
-    image: redis:6.2-alpine
+    image: redis:7-alpine
     networks:
       - frappe_network
     deploy:
@@ -190,7 +191,7 @@ services:
       - redis-queue-data:/data
 
   redis-cache:
-    image: redis:6.2-alpine
+    image: redis:7-alpine
     networks:
       - frappe_network
     deploy:

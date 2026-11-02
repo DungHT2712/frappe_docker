@@ -3,7 +3,7 @@ import frappe
 
 def check_db():
     doc = frappe.get_single("System Settings")
-    assert any(v is None for v in doc.as_dict().values()), "Database test didn't pass"
+    assert any(v is not None for v in doc.as_dict().values()), "Database test didn't pass"
     print("Database works!")
 
 

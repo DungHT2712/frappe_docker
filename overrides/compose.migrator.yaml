@@ -23,7 +23,6 @@ x-backend-defaults: &backend_defaults
 services:
   migrator:
     <<: *backend_defaults
-    platform: linux/amd64
     entrypoint:
       - bash
       - -c

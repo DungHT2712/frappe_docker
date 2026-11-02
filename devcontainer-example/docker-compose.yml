@@ -14,7 +14,7 @@ services:
 
   # Enable PostgreSQL only if you use it, see development/README.md for more information.
   # postgresql:
-  #   image: postgres:14
+  #   image: postgres:15.17
   #   environment:
   #     POSTGRES_PASSWORD: 123
   #   volumes:

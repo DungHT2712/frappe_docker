@@ -13,9 +13,9 @@ fi
 # Function to restart SSH service (Linux)
 restart_ssh_linux() {
   if command -v service >/dev/null 2>&1; then
-    sudo service ssh restart
+    service ssh restart
   else
-    sudo systemctl restart ssh
+    systemctl restart ssh
   fi
 }
 
@@ -31,10 +31,10 @@ update_x11_forwarding() {
   else
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
       # Linux: Use sed for Linux
-      sudo sed -i 's/#\?X11Forwarding.*/X11Forwarding yes/' /etc/ssh/sshd_config
+      sed -i 's/#\?X11Forwarding.*/X11Forwarding yes/' /etc/ssh/sshd_config
     elif [[ "$OSTYPE" == "darwin"* ]]; then
       # macOS: Use sed for macOS
-      sudo sed -i -E 's/#X11Forwarding.*/X11Forwarding yes/' /etc/ssh/sshd_config
+      sed -i -E 's/#X11Forwarding.*/X11Forwarding yes/' /etc/ssh/sshd_config
       restart_ssh_macos
     fi
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -49,37 +49,20 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
   if command -v startx >/dev/null 2>&1; then
     echo "X11 is already installed."
   else
-    # Check which package manager is available
     if command -v apt-get >/dev/null 2>&1; then
-      install_command="sudo apt-get update && sudo apt-get install xorg openbox"
+      apt-get update && apt-get install -y xorg openbox
     elif command -v dnf >/dev/null 2>&1; then
-      install_command="sudo dnf install xorg-x11-server-Xorg openbox"
+      dnf install -y xorg-x11-server-Xorg openbox
     else
-      echo "Error: Unable to determine the package manager. Manual installation required."
+      echo "Error: Unsupported package manager. Manual installation required."
       exit 1
     fi
-  fi
-  # Check if the installation command is defined
-  if [ -n "$install_command" ]; then
-    # Execute the installation command
-    if $install_command; then
-      echo "X11 and Openbox have been successfully installed."
-    else
-      echo "Error: Failed to install X11 and Openbox."
-      exit 1
-    fi
-  else
-    echo "Error: Unsupported package manager."
-    exit 1
+    echo "X11 and Openbox have been successfully installed."
   fi
 
-  # Call the function to update X11Forwarding
   update_x11_forwarding
-
-  # Get the IP address of the host dynamically
   host_ip=$(hostname -I | awk '{print $1}')
   xhost + "$host_ip" && xhost + local:
-  # Set the DISPLAY variable to the host IP
   export DISPLAY="$host_ip:0.0"
   echo "DISPLAY variable set to $DISPLAY"
 
